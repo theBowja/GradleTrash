@@ -18,16 +18,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+
+@Api(value = "Book", description = "Operations with book", produces = "application/json")
 @RestController
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class BookController {
 	@Autowired
 	BookStoreInterface bookStore;
 	
-    @RequestMapping("/")
-    public String index() {
-        return "Greetings from Spring Boot!";
-    }
-
     @RequestMapping(value = "/books", method = RequestMethod.GET,
     		produces={MediaType.APPLICATION_JSON_VALUE})
     public Collection<Book> list() {
@@ -40,6 +42,11 @@ public class BookController {
 	@RequestMapping(value = "/books", method = RequestMethod.POST,
     		consumes={MediaType.APPLICATION_JSON_VALUE},
     		produces={MediaType.APPLICATION_JSON_VALUE})
+    @ApiOperation(value = "Add a book", notes = "Add a new book")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Fields are with validation errors"),
+            @ApiResponse(code = 201, message = "Added")
+    })
     public ResponseEntity addBook(@RequestBody Book book) {
     	try {
     		Book newbook = bookStore.addNewBook(book);
@@ -53,6 +60,11 @@ public class BookController {
     
     @RequestMapping(value = "/books/{bookId}", method = RequestMethod.GET,
     		produces={MediaType.APPLICATION_JSON_VALUE})
+    @ApiOperation(value = "Get book info", notes = "Get the book info")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not found the book"),
+            @ApiResponse(code = 200, message = "Found the book")
+    })
     public ResponseEntity getBook(@PathVariable("bookId")String id) {
         Book book = bookStore.lookup(id);
 
@@ -65,6 +77,12 @@ public class BookController {
     @RequestMapping(value = "/books/{bookId}", method = RequestMethod.PUT,
     		consumes={MediaType.APPLICATION_JSON_VALUE},
     		produces={MediaType.APPLICATION_JSON_VALUE})
+    @ApiOperation(value = "Modify book info", notes = "Modify the book info")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not found the book"),
+            @ApiResponse(code = 400, message = "Fields are with validation errors"),
+            @ApiResponse(code = 200, message = "Update the book info")
+    })
     public ResponseEntity changeBook(@PathVariable("bookId")String id, @RequestBody Book modified) {
     	try {
     		Book book = bookStore.updateBook(id, modified);
@@ -78,6 +96,11 @@ public class BookController {
     }
     
     @RequestMapping(value = "/books/{bookId}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete the book", notes = "Remove the book from repository")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not found the book"),
+            @ApiResponse(code = 200, message = "Removed the book")
+    })
     public ResponseEntity deleteBook(@PathVariable("bookId")String id) {
         Book book = bookStore.lookup(id);
 
