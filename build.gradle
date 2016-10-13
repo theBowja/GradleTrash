@@ -37,6 +37,12 @@ dependencies {
 	// swagger - http://www.tothenew.com/blog/integrate-swaggerui-with-spring-boot-application/
 	compile 'com.mangofactory:swagger-springmvc:1.0.2'
 	
+	// add thymeleaf theme
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+	
+	// add spring boot security
+	compile("org.springframework.boot:spring-boot-starter-security")
+	
     //actuator
     compile("org.springframework.boot:spring-boot-starter-actuator")
 
