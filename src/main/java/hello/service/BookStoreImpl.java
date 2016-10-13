@@ -19,8 +19,9 @@ public class BookStoreImpl implements BookStoreInterface {
 	public Book addNewBook(Book book) throws IllegalArgumentException {
 		if (book == null)
 			throw new IllegalArgumentException("null");
-		if (!validateBook(book))
-			throw new IllegalArgumentException("bad book attributes");
+		
+		validateBook(book);
+			
 		String bookId = book.getId();
 		if (books.get(bookId) != null)
 			throw new IllegalArgumentException("book exists");
@@ -31,12 +32,14 @@ public class BookStoreImpl implements BookStoreInterface {
 		books.put(bookId, book);
 		return book;
 	}
-
 	
-	private boolean validateBook(Book book) {
+	private void validateBook(Book book) throws IllegalArgumentException {
+		// book name can not be empty
 		if (book.getName() == null)
-			return false;
-		return true;
+			throw new IllegalArgumentException("bad book attributes");
+		// price can be empty but not negative
+		if (book.getPrice() != null && book.getPrice() < 0)
+			throw new IllegalArgumentException("bad book attributes");
 	}
 	
 	@Override
@@ -49,5 +52,31 @@ public class BookStoreImpl implements BookStoreInterface {
 	@Override
 	public Book lookup(String bookId) {
 		return books.get(bookId);
+	}
+
+
+	@Override
+	public Book updateBook(String bookId, Book modified) throws IllegalArgumentException {
+		Book book = lookup(bookId);
+		if (book == null)
+			return null;
+		
+        // if there's new name
+        if (modified.getName() != null)
+        	book.setName(modified.getName());
+        
+        // if there's new price
+        if (modified.getPrice() != null)
+        	book.setPrice(modified.getPrice());
+        
+        // validate the new attributes
+        validateBook(book);
+        
+        return book;
+	}
+
+	@Override
+	public void deleteBook(Book book) {
+		books.remove(book.getId());
 	}
 }

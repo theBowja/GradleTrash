@@ -61,4 +61,30 @@ public class BookController {
         else
         	return new ResponseEntity(book, HttpStatus.OK);
     }
+    
+    @RequestMapping(value = "/books/{bookId}", method = RequestMethod.PUT,
+    		consumes={MediaType.APPLICATION_JSON_VALUE},
+    		produces={MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity changeBook(@PathVariable("bookId")String id, @RequestBody Book modified) {
+    	try {
+    		Book book = bookStore.updateBook(id, modified);
+    		if (book == null)
+    			return new ResponseEntity(HttpStatus.NOT_FOUND);
+    		else
+    			return new ResponseEntity(book, HttpStatus.OK);
+    	} catch (IllegalArgumentException e) {
+    		return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    	}
+    }
+    
+    @RequestMapping(value = "/books/{bookId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteBook(@PathVariable("bookId")String id) {
+        Book book = bookStore.lookup(id);
+
+        if (book == null)
+        	return new ResponseEntity(HttpStatus.NOT_FOUND);
+        
+        bookStore.deleteBook(book);
+        return new ResponseEntity(HttpStatus.OK);  // some people prefer to use HttpStatus.NO_CONTENT
+    }
 }

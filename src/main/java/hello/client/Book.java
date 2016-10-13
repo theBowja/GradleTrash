@@ -1,8 +1,14 @@
 package hello.client;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class Book {
 	String id;
 	String name;
+	Integer price;
+	
 	public String getId() {
 		return id;
 	}
@@ -14,6 +20,12 @@ public class Book {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Integer getPrice() {
+		return price;
+	}
+	public void setPrice(Integer price) {
+		this.price = price;
 	}
 	
 	
